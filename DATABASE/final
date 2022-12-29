@@ -1,0 +1,85 @@
+CREATE DATABASE penjualan_db;
+
+\c penjualan_db;
+
+CREATE TABLE supplier_tb (
+    id_supplier INT PRIMARY KEY NOT NULL, 
+    nama_supplier VARCHAR(30) NOT NULL, 
+    no_telp CHAR(15), alamat VARCHAR(100)
+);
+
+CREATE TABLE barang_tb (
+    id_barang INT PRIMARY KEY NOT NULL, 
+    nama_barang VARCHAR(100) NOT NULL, 
+    harga INT, 
+    stok INT, 
+    id_supplier INT
+);
+
+CREATE TABLE pembeli_tb (
+    id_pembeli INT PRIMARY KEY NOT NULL,
+    nama_pembeli VARCHAR(30) NOT NULL,
+    jk CHAR(1),
+    telp_pembeli CHAR(15),
+    alamat_pembeli VARCHAR(50)
+);
+
+CREATE TABLE transaksi_tb (
+    id_transaksi INT PRIMARY KEY NOT NULL, 
+    id_barang INT, 
+    id_pembeli INT, 
+    tanggal DATE, 
+    keterangan VARCHAR(100)
+);
+
+CREATE TABLE pembayaran_tb (
+    id_pembayaran INT PRIMARY KEY NOT NULL, 
+    tanggal_bayar DATE, 
+    total_bayar INT, 
+    id_transaksi INT
+);
+
+ALTER TABLE barang_tb ADD CONSTRAINT fk_supplier_barang FOREIGN KEY (id_supplier) REFERENCES supplier_tb(id_supplier) ON DELETE CASCADE;
+ALTER TABLE transaksi_tb ADD CONSTRAINT fk_barang_transaksi FOREIGN KEY (id_barang) REFERENCES barang_tb(id_barang) ON DELETE CASCADE;
+ALTER TABLE transaksi_tb ADD CONSTRAINT fk_pembeli_transaksi FOREIGN KEY (id_pembeli) REFERENCES pembeli_tb(id_pembeli) ON DELETE CASCADE;
+ALTER TABLE pembayaran_tb ADD CONSTRAINT fk_transaksi_pembayaran FOREIGN KEY (id_transaksi) REFERENCES transaksi_tb(id_transaksi) ON DELETE CASCADE;
+
+INSERT INTO supplier_tb (id_supplier, nama_supplier, no_telp, alamat) VALUES 
+('202201', 'PT. SEMESTA TECHNOLOGY', '08123456789', 'Jakarta Timur'),
+('202202', 'PT. KARANG SAMUDERA', '08133456789', 'Bandung'),
+('202203', 'PT. JAYA ABADI', '08143456789', 'Malang'),
+('202204', 'PT. MINANG', '08153456789', 'Padang'),
+('202205', 'PT. DAENG', '08163456789', 'Makassar'),
+('202206', 'PT. MANDARQ', '08173456789', 'Majene');
+
+INSERT INTO barang_tb (id_barang, nama_barang, harga, stok, id_supplier) VALUES 
+('202201001', 'Keyboard Rexus', '500000', '100', '202201'),
+('202202001', 'Case Black Keyboard', '500000', '200', '202202'),
+('202203001', 'Mouse Wireless VX-01', '300000', '100', '202203'),
+('202204001', 'Headset Gaming', '200000', '1000', '202204'),
+('202205001', 'Earphone Gaming', '200000', '1000', '202205'),
+('202206001', 'Smart CCTV', '3000000', '5000', '202206');
+
+INSERT INTO pembeli_tb (id_pembeli, nama_pembeli, jk, telp_pembeli, alamat_pembeli) VALUES
+('302201', 'Fivin', 'P', '08223456789', 'Babana'),
+('302202', 'Via', 'P', '08323456789', 'Lembang'),
+('302203', 'Nia', 'P', '08423456789', 'Tarailu'),
+('302204', 'Arif', 'L', '08523456789', 'Baurung'),
+('302205', 'Alim', 'L', '08623456789', 'Baurung'),
+('302206', 'Harun', 'L', '08723456789', 'L.Maloga');
+
+INSERT INTO transaksi_tb (id_transaksi, id_barang, id_pembeli, tanggal, keterangan) VALUES
+('401', '202201001', '302201', '2022-12-28', 'no-ket'),
+('402', '202202001', '302202', '2022-12-28', 'no-ket'),
+('403', '202203001', '302203', '2022-12-28', 'no-ket'),
+('404', '202204001', '302204', '2022-12-28', 'no-ket'),
+('405', '202205001', '302205', '2022-12-28', 'no-ket'),
+('406', '202206001', '302206', '2022-12-28', 'no-ket');
+
+INSERT INTO pembayaran_tb (id_pembayaran, tanggal_bayar, total_bayar, id_transaksi) VALUES
+('501', '2022-12-28','500000', '401'),
+('502', '2022-12-28','500000', '402'),
+('503', '2022-12-28','300000', '403'),
+('504', '2022-12-28','200000', '404'),
+('505', '2022-12-28','200000', '405'),
+('506', '2022-12-28','3000000', '406');
